@@ -1,4 +1,4 @@
-# Log4php (joaomfrebelo)
+# Log4php (Simova)
 
 This project is a fork of Apache log4php, to make it compatible with php version 8.0 and above.
 
