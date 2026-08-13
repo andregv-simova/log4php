@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at.
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -29,20 +30,19 @@
  *
  * This class was originally contributed by Bruce Ingalls (Bruce.Ingalls-at-gmail-dot-com).
  *
- * @link https://github.com/firephp/firephp FirePHP homepage.
- * @link http://sourcemint.com/github.com/firephp/firephp/1:1.0.0b1rc6/-docs/Welcome FirePHP documentation.
- * @link http://sourcemint.com/github.com/firephp/firephp/1:1.0.0b1rc6/-docs/Configuration/Constants FirePHP constants documentation.
- * @link http://logging.apache.org/log4php/docs/appenders/firephp.html Appender documentation
+ * @see https://github.com/firephp/firephp FirePHP homepage.
+ * @see http://sourcemint.com/github.com/firephp/firephp/1:1.0.0b1rc6/-docs/Welcome FirePHP documentation.
+ * @see http://sourcemint.com/github.com/firephp/firephp/1:1.0.0b1rc6/-docs/Configuration/Constants FirePHP constants documentation.
+ * @see http://logging.apache.org/log4php/docs/appenders/firephp.html Appender documentation
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @since 2.3
+ *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderFirePHP extends LoggerAppender
 {
-
     /**
      * Instance of the Insight console class.
      */
@@ -61,7 +61,7 @@ class LoggerAppenderFirePHP extends LoggerAppender
     {
         if (method_exists('FirePHP', 'to')) {
             $this->console = FirePHP::to($this->target)->console();
-            $this->closed  = false;
+            $this->closed = false;
         } else {
             $this->warn('FirePHP is not installed correctly. Closing appender.');
         }
@@ -80,16 +80,23 @@ class LoggerAppenderFirePHP extends LoggerAppender
             case LoggerLevel::TRACE:
             case LoggerLevel::DEBUG:
                 $this->console->log($msg);
+
                 break;
+
             case LoggerLevel::INFO:
                 $this->console->info($msg);
+
                 break;
+
             case LoggerLevel::WARN:
                 $this->console->warn($msg);
+
                 break;
+
             case LoggerLevel::ERROR:
             case LoggerLevel::FATAL:
                 $this->console->error($msg);
+
                 break;
         }
     }
@@ -101,7 +108,7 @@ class LoggerAppenderFirePHP extends LoggerAppender
     }
 
     /** Sets the target. */
-    public function setTarget($target)
+    public function setTarget(mixed $target)
     {
         $this->setString('target', $target);
     }

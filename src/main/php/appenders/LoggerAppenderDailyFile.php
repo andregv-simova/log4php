@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -35,27 +36,24 @@
  *     otherwise the file contents will be overwritten. Defaults to true.
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/daily-file.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/daily-file.html Appender documentation
  *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderDailyFile extends LoggerAppenderFile
 {
-
     /**
      * The 'datePattern' parameter.
      * Determines how date will be formatted in file name.
-     * @var string
      */
-    protected string $datePattern = "Ymd";
+    protected string $datePattern = 'Ymd';
 
     /**
      * Current date which was used when opening a file.
      * Used to determine if a rollover is needed when the date changes.
-     * @var string
      */
     protected string $currentDate;
 
@@ -85,7 +83,7 @@ class LoggerAppenderDailyFile extends LoggerAppenderFile
         if (!isset($this->currentDate)) {
             $this->currentDate = $eventDate;
         } // Check if rollover is needed
-        else if ($this->currentDate !== $eventDate) {
+        elseif ($this->currentDate !== $eventDate) {
             $this->currentDate = $eventDate;
 
             // Close the file if it's open.
@@ -102,23 +100,8 @@ class LoggerAppenderDailyFile extends LoggerAppenderFile
         parent::append($event);
     }
 
-    /** Renders the date using the configured <var>datePattern<var>. */
-    protected function getDate($timestamp = null): string
-    {
-        return date($this->datePattern, (int)$timestamp);
-    }
-
-    /**
-     * Determines target file. Replaces %s in file path with a date.
-     */
-    protected function getTargetFile(): string
-    {
-        return str_replace('%s', $this->currentDate, $this->file);
-    }
-
     /**
      * Sets the 'datePattern' parameter.
-     * @param string $datePattern
      */
     public function setDatePattern(string $datePattern)
     {
@@ -127,10 +110,23 @@ class LoggerAppenderDailyFile extends LoggerAppenderFile
 
     /**
      * Returns the 'datePattern' parameter.
-     * @return string
      */
     public function getDatePattern(): string
     {
         return $this->datePattern;
+    }
+
+    /** Renders the date using the configured <var>datePattern<var>. */
+    protected function getDate($timestamp = null): string
+    {
+        return date($this->datePattern, (int) $timestamp);
+    }
+
+    /**
+     * Determines target file. Replaces %s in file path with a date.
+     */
+    protected function getTargetFile(): string
+    {
+        return str_replace('%s', $this->currentDate, $this->file);
     }
 }

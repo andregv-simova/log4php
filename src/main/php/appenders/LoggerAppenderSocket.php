@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -29,18 +30,18 @@
  * The socket will by default be opened in blocking mode.
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/socket.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/socket.html Appender documentation
  *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderSocket extends LoggerAppender
 {
-
     /**
      * Target host.
+     *
      * @see http://php.net/manual/en/function.fsockopen.php
      */
     protected mixed $remoteHost;
@@ -64,13 +65,14 @@ class LoggerAppenderSocket extends LoggerAppender
     public function activateOptions()
     {
         if (empty($this->remoteHost)) {
-            $this->warn("Required parameter [remoteHost] not set. Closing appender.");
+            $this->warn('Required parameter [remoteHost] not set. Closing appender.');
             $this->closed = true;
+
             return;
         }
 
         if (empty($this->timeout)) {
-            $this->timeout = ini_get("default_socket_timeout");
+            $this->timeout = ini_get('default_socket_timeout');
         }
 
         $this->closed = false;
@@ -79,14 +81,15 @@ class LoggerAppenderSocket extends LoggerAppender
     public function append(LoggerLoggingEvent $event)
     {
         $socket = fsockopen($this->remoteHost, $this->port, $errno, $errstr, $this->timeout);
-        if ($socket === false) {
-            $this->warn("Could not open socket to $this->remoteHost:$this->port. Closing appender.");
+        if (false === $socket) {
+            $this->warn("Could not open socket to {$this->remoteHost}:{$this->port}. Closing appender.");
             $this->closed = true;
+
             return;
         }
 
         if (false === fwrite($socket, $this->layout->format($event))) {
-            $this->warn("Error writing to socket. Closing appender.");
+            $this->warn('Error writing to socket. Closing appender.');
             $this->closed = true;
         }
         fclose($socket);

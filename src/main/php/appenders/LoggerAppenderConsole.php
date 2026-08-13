@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -30,46 +31,45 @@
  * - **target** - the target stream: "stdout" or "stderr"
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/console.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/console.html Appender documentation
  *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderConsole extends LoggerAppender
 {
-
     /** The standard output stream.  */
-    const STDOUT = 'php://stdout';
+    public const STDOUT = 'php://stdout';
 
     /** The standard error stream.*/
-    const STDERR = 'php://stderr';
+    public const STDERR = 'php://stderr';
 
     /** The 'target' parameter. */
     protected string $target = self::STDOUT;
 
     /**
      * Stream resource for the target stream.
+     *
      * @var resource
      */
-    protected $fp = null;
+    protected $fp;
 
     public function activateOptions()
     {
         $this->fp = fopen($this->target, 'w');
-        if (is_resource($this->fp) && $this->layout !== null) {
-            fwrite($this->fp, $this->layout->getHeader() ?? "");
+        if (is_resource($this->fp) && null !== $this->layout) {
+            fwrite($this->fp, $this->layout->getHeader() ?? '');
         }
-        $this->closed = is_resource($this->fp) === false;
+        $this->closed = false === is_resource($this->fp);
     }
-
 
     public function close()
     {
         if (!$this->closed) {
-            if (is_resource($this->fp) && $this->layout !== null) {
-                fwrite($this->fp, $this->layout->getFooter() ?? "");
+            if (is_resource($this->fp) && null !== $this->layout) {
+                fwrite($this->fp, $this->layout->getFooter() ?? '');
                 fclose($this->fp);
             }
             $this->closed = true;
@@ -78,31 +78,29 @@ class LoggerAppenderConsole extends LoggerAppender
 
     public function append(LoggerLoggingEvent $event)
     {
-        if (is_resource($this->fp) && $this->layout !== null) {
+        if (is_resource($this->fp) && null !== $this->layout) {
             fwrite($this->fp, $this->layout->format($event));
         }
     }
 
     /**
      * Sets the 'target' parameter.
-     * @param string $target
      */
     public function setTarget(string $target)
     {
         $value = trim($target);
-        if ($value == self::STDOUT || strtoupper($value) == 'STDOUT') {
+        if (self::STDOUT == $value || 'STDOUT' == strtoupper($value)) {
             $this->target = self::STDOUT;
-        } elseif ($value == self::STDERR || strtoupper($value) == 'STDERR') {
+        } elseif (self::STDERR == $value || 'STDERR' == strtoupper($value)) {
             $this->target = self::STDERR;
         } else {
             $target = var_export($target, true);
-            $this->warn("Invalid value given for 'target' property: [$target]. Property not set.");
+            $this->warn("Invalid value given for 'target' property: [{$target}]. Property not set.");
         }
     }
 
     /**
      * Returns the value of the 'target' parameter.
-     * @return string
      */
     public function getTarget(): string
     {

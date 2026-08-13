@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,89 +15,87 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @package log4php
  */
 
 /**
  * A base class from which all classes which have configurable properties are
  * extended. Provides a generic setter with integrated validation.
  *
- * @package log4php
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+ *
  * @version $Revision $
+ *
  * @since 2.2
  *
  * @note File changed by Joao M F Rebelo
  */
 abstract class LoggerConfigurable
 {
-
     /** Setter function for boolean type.
      * @noinspection PhpUnused
      */
-    protected function setBoolean($property, $value): void
+    protected function setBoolean(string $property, mixed $value): void
     {
         try {
-            $this->$property = LoggerOptionConverter::toBooleanEx($value);
+            $this->{$property} = LoggerOptionConverter::toBooleanEx($value);
         } catch (Exception) {
             $value = var_export($value, true);
-            $this->warn("Invalid value given for '$property' property: [$value]. Expected a boolean value. Property not changed.");
+            $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected a boolean value. Property not changed.");
         }
     }
 
     /** Setter function for integer type. */
-    protected function setInteger($property, $value): void
+    protected function setInteger(string $property, mixed $value): void
     {
         try {
-            $this->$property = LoggerOptionConverter::toIntegerEx($value);
+            $this->{$property} = LoggerOptionConverter::toIntegerEx($value);
         } catch (Exception) {
             $value = var_export($value, true);
-            $this->warn("Invalid value given for '$property' property: [$value]. Expected an integer. Property not changed.");
+            $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected an integer. Property not changed.");
         }
     }
 
     /** Setter function for LoggerLevel values. */
-    protected function setLevel($property, $value): void
+    protected function setLevel(string $property, mixed $value): void
     {
         try {
-            $this->$property = LoggerOptionConverter::toLevelEx($value);
+            $this->{$property} = LoggerOptionConverter::toLevelEx($value);
         } catch (Exception) {
             $value = var_export($value, true);
-            $this->warn("Invalid value given for '$property' property: [$value]. Expected a level value. Property not changed.");
+            $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected a level value. Property not changed.");
         }
     }
 
     /** Setter function for integer type.
      * @noinspection PhpUnused
      */
-    protected function setPositiveInteger($property, $value): void
+    protected function setPositiveInteger(string $property, mixed $value): void
     {
         try {
-            $this->$property = LoggerOptionConverter::toPositiveIntegerEx($value);
+            $this->{$property} = LoggerOptionConverter::toPositiveIntegerEx($value);
         } catch (Exception) {
             $value = var_export($value, true);
-            $this->warn("Invalid value given for '$property' property: [$value]. Expected a positive integer. Property not changed.");
+            $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected a positive integer. Property not changed.");
         }
     }
 
     /** Setter for file size.
      * @noinspection PhpUnused
      */
-    protected function setFileSize($property, $value): void
+    protected function setFileSize(string $property, mixed $value): void
     {
         try {
-            $this->$property = LoggerOptionConverter::toFileSizeEx($value);
+            $this->{$property} = LoggerOptionConverter::toFileSizeEx($value);
         } catch (Exception) {
             $value = var_export($value, true);
-            $this->warn("Invalid value given for '$property' property: [$value]. Expected a file size value.  Property not changed.");
+            $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected a file size value.  Property not changed.");
         }
     }
 
     /** Setter function for numeric type.
      * @noinspection PhpUnused
      */
-    protected function setNumeric($property, $value): void
+    protected function setNumeric(string $property, mixed $value): void
     {
         $this->setInteger($property, $value);
     }
@@ -104,29 +103,29 @@ abstract class LoggerConfigurable
     /** Setter function for string type.
      * @noinspection PhpUnused
      */
-    protected function setString($property, $value, $nullable = false): void
+    protected function setString(string $property, mixed $value, mixed $nullable = false): void
     {
-        if ($value === null) {
+        if (null === $value) {
             if ($nullable) {
-                $this->$property = null;
+                $this->{$property} = null;
             } else {
-                $this->warn("Null value given for '$property' property. Expected a string. Property not changed.");
+                $this->warn("Null value given for '{$property}' property. Expected a string. Property not changed.");
             }
         } else {
             try {
-                $value           = LoggerOptionConverter::toStringEx($value);
-                $this->$property = LoggerOptionConverter::substConstants($value);
+                $value = LoggerOptionConverter::toStringEx($value);
+                $this->{$property} = LoggerOptionConverter::substConstants($value);
             } catch (Exception) {
                 $value = var_export($value, true);
-                $this->warn("Invalid value given for '$property' property: [$value]. Expected a string. Property not changed.");
+                $this->warn("Invalid value given for '{$property}' property: [{$value}]. Expected a string. Property not changed.");
             }
         }
     }
 
     /** Triggers a warning. */
-    protected function warn($message): void
+    protected function warn(string $message): void
     {
         $class = get_class($this);
-        trigger_error("log4php: $class: $message", E_USER_WARNING);
+        trigger_error("log4php: {$class}: {$message}", E_USER_WARNING);
     }
 }

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -35,49 +36,44 @@
  *     Windows.
  *
  * @property true $close* @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/mail-event.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/mail-event.html Appender documentation
+ *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderMailEvent extends LoggerAppender
 {
-
     /**
      * Email address to put in From field of the email.
-     * @var string
      */
     protected string $from;
 
     /**
      * Mail server port (widows only).
-     * @var integer
      */
     protected int $port = 25;
 
     /**
      * Mail server hostname (windows only).
-     * @var string
      */
-    protected string $smtpHost = "";
+    protected string $smtpHost = '';
 
     /**
      * The subject of the email.
-     * @var string
      */
     protected string $subject = 'Log4php Report';
 
     /**
      * One or more comma separated email addresses to which to send the email.
-     * @var string|null
      */
     protected ?string $to = null;
 
     /**
      * Indicates whether this appender should run in dry mode.
+     *
      * @deprecated
-     * @var boolean
      */
     protected bool $dry = false;
 
@@ -88,6 +84,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
         if (empty($this->to)) {
             $this->warn("Required parameter 'to' not set. Closing appender.");
             $this->close = true;
+
             return;
         }
 
@@ -95,6 +92,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
         if (empty($this->from) and empty($sendmail_from)) {
             $this->warn("Required parameter 'from' not set. Closing appender.");
             $this->close = true;
+
             return;
         }
 
@@ -103,13 +101,13 @@ class LoggerAppenderMailEvent extends LoggerAppender
 
     public function append(LoggerLoggingEvent $event): void
     {
-        $smtpHost     = $this->smtpHost;
+        $smtpHost = $this->smtpHost;
         $prevSmtpHost = ini_get('SMTP');
         if (!empty($smtpHost)) {
             ini_set('SMTP', $smtpHost);
         }
 
-        $smtpPort     = $this->port;
+        $smtpPort = $this->port;
         $prevSmtpPort = ini_get('smtp_port');
         if ($smtpPort > 0 and $smtpPort < 65535) {
             ini_set('smtp_port', $smtpPort);
@@ -117,12 +115,12 @@ class LoggerAppenderMailEvent extends LoggerAppender
 
         // On unix only sendmail_path, which is PHP_INI_SYSTEM i.e. not changeable here, is used.
 
-        $addHeader = empty($this->from) ? '' : "From: $this->from\r\n";
+        $addHeader = empty($this->from) ? '' : "From: {$this->from}\r\n";
 
         if (!$this->dry) {
-            mail($this->to, $this->subject, $this->layout->getHeader() . $this->layout->format($event) . $this->layout->getFooter(), $addHeader);
+            mail($this->to, $this->subject, $this->layout->getHeader().$this->layout->format($event).$this->layout->getFooter(), $addHeader);
         } else {
-            echo "DRY MODE OF MAIL APP.: Send mail to: " . $this->to . " with additional headers '" . trim($addHeader) . "' and content: " . $this->layout->format($event);
+            echo 'DRY MODE OF MAIL APP.: Send mail to: '.$this->to." with additional headers '".trim($addHeader)."' and content: ".$this->layout->format($event);
         }
 
         ini_set('SMTP', $prevSmtpHost);
@@ -130,7 +128,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Sets the 'from' parameter. */
-    public function setFrom($from): void
+    public function setFrom(mixed $from): void
     {
         $this->setString('from', $from);
     }
@@ -142,7 +140,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Sets the 'port' parameter. */
-    public function setPort($port): void
+    public function setPort(mixed $port): void
     {
         $this->setPositiveInteger('port', $port);
     }
@@ -154,7 +152,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Sets the 'smtpHost' parameter. */
-    public function setSmtpHost($smtpHost): void
+    public function setSmtpHost(mixed $smtpHost): void
     {
         $this->setString('smtpHost', $smtpHost);
     }
@@ -166,7 +164,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Sets the 'subject' parameter. */
-    public function setSubject($subject): void
+    public function setSubject(mixed $subject): void
     {
         $this->setString('subject', $subject);
     }
@@ -178,7 +176,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Sets the 'to' parameter. */
-    public function setTo($to): void
+    public function setTo(mixed $to): void
     {
         $this->setString('to', $to);
     }
@@ -190,7 +188,7 @@ class LoggerAppenderMailEvent extends LoggerAppender
     }
 
     /** Enables or disables dry mode. */
-    public function setDry($dry): void
+    public function setDry(mixed $dry): void
     {
         $this->setBoolean('dry', $dry);
     }

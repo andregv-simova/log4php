@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at.
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -33,22 +34,24 @@
  *                     insertSQL.
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @since 2.0
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/pdo.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/pdo.html Appender documentation
+ *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAppenderPDO extends LoggerAppender
 {
-
     // ******************************************
     // *** Configurable parameters            ***
     // ******************************************
 
     /**
      * DSN string used to connect to the database.
+     *
      * @see http://www.php.net/manual/en/pdo.construct.php
      */
     protected ?string $dsn = null;
@@ -68,7 +71,7 @@ class LoggerAppenderPDO extends LoggerAppender
      * The questionmarks are part of the prepared statement, and they must
      * match the number of conversion specifiers in {@link insertPattern}.
      */
-    protected string $insertSQL = "INSERT INTO __TABLE__ (timestamp, logger, level, message, thread, file, line) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    protected string $insertSQL = 'INSERT INTO __TABLE__ (timestamp, logger, level, message, thread, file, line) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
     /**
      * A comma separated list of {@link LoggerPatternLayout} format strings
@@ -79,7 +82,7 @@ class LoggerAppenderPDO extends LoggerAppender
      *
      * @see LoggerPatternLayout For conversion patterns.
      */
-    protected string $insertPattern = "%date{Y-m-d H:i:s},%logger,%level,%message,%pid,%file,%line";
+    protected string $insertPattern = '%date{Y-m-d H:i:s},%logger,%level,%message,%pid,%file,%line';
 
     /** Name of the table to which to append log events. */
     protected string $table = 'log4php_log';
@@ -87,19 +90,18 @@ class LoggerAppenderPDO extends LoggerAppender
     /** The number of recconect attempts to make on failed append. */
     protected int $reconnectAttempts = 3;
 
-
     // ******************************************
     // *** Private memebers                   ***
     // ******************************************
 
     /**
      * The PDO instance.
-     * @var PDO|null
      */
     protected ?PDO $db = null;
 
     /**
      * Prepared statement for the insert query.
+     *
      * @var PDOStatement
      */
     protected $preparedInsert;
@@ -117,6 +119,7 @@ class LoggerAppenderPDO extends LoggerAppender
      * Acquires a database connection based on parameters.
      * Parses the insert pattern to create a chain of converters which will be
      * used in forming query parameters from logging events.
+     *
      * @throws LoggerException
      */
     public function activateOptions()
@@ -124,35 +127,21 @@ class LoggerAppenderPDO extends LoggerAppender
         try {
             $this->establishConnection();
         } catch (PDOException $e) {
-            $this->warn("Failed connecting to database. Closing appender. Error: " . $e->getMessage());
+            $this->warn('Failed connecting to database. Closing appender. Error: '.$e->getMessage());
             $this->close();
+
             return;
         }
 
         // Parse the insert patterns; pattern parts are comma delimited
-        $pieces       = explode(',', $this->insertPattern);
+        $pieces = explode(',', $this->insertPattern);
         $converterMap = LoggerLayoutPattern::getDefaultConverterMap();
         foreach ($pieces as $pattern) {
-            $parser             = new LoggerPatternParser($pattern, $converterMap);
+            $parser = new LoggerPatternParser($pattern, $converterMap);
             $this->converters[] = $parser->parse();
         }
 
         $this->closed = false;
-    }
-
-    /**
-     * Connects to the database, and prepares the insert query.
-     * @throws PDOException If connect or prepare fails.
-     */
-    protected function establishConnection()
-    {
-        // Acquire database connection
-        $this->db = new PDO($this->dsn, $this->user, $this->password);
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Prepare the insert statement
-        $insertSQL            = str_replace('__TABLE__', $this->table, $this->insertSQL);
-        $this->preparedInsert = $this->db->prepare($insertSQL);
     }
 
     /**
@@ -164,23 +153,23 @@ class LoggerAppenderPDO extends LoggerAppender
      */
     public function append(LoggerLoggingEvent $event)
     {
-
-        for ($attempt = 1; $attempt <= $this->reconnectAttempts + 1; $attempt++) {
+        for ($attempt = 1; $attempt <= $this->reconnectAttempts + 1; ++$attempt) {
             try {
                 // Attempt to write to database
                 $this->preparedInsert->execute($this->format($event));
                 $this->preparedInsert->closeCursor();
+
                 break;
             } catch (PDOException $e) {
-                $this->warn("Failed writing to database: " . $e->getMessage());
+                $this->warn('Failed writing to database: '.$e->getMessage());
 
                 // Close the appender if it's the last attempt
                 if ($attempt > $this->reconnectAttempts) {
-                    $this->warn("Failed writing to database after $this->reconnectAttempts reconnect attempts. Closing appender.");
+                    $this->warn("Failed writing to database after {$this->reconnectAttempts} reconnect attempts. Closing appender.");
                     $this->close();
-                    // Otherwise reconnect and try to write again
+                // Otherwise reconnect and try to write again
                 } else {
-                    $this->warn("Attempting a reconnect (attempt $attempt of {$this->reconnectAttempts}).");
+                    $this->warn("Attempting a reconnect (attempt {$attempt} of {$this->reconnectAttempts}).");
                     $this->establishConnection();
                 }
             }
@@ -188,25 +177,7 @@ class LoggerAppenderPDO extends LoggerAppender
     }
 
     /**
-     * Converts the logging event to a series of database parameters by using
-     * the converter chain which was set up on activation.
-     */
-    protected function format(LoggerLoggingEvent $event): array
-    {
-        $params = array();
-        foreach ($this->converters as $converter) {
-            $buffer = '';
-            while ($converter !== null) {
-                $converter->format($buffer, $event);
-                $converter = $converter->next;
-            }
-            $params[] = $buffer;
-        }
-        return $params;
-    }
-
-    /**
-     * Closes the connection to the logging database
+     * Closes the connection to the logging database.
      */
     public function close()
     {
@@ -223,7 +194,6 @@ class LoggerAppenderPDO extends LoggerAppender
 
     /**
      * Returns the active database handle or null if not established.
-     * @return PDO|null
      */
     public function getDatabaseHandle(): ?PDO
     {
@@ -300,5 +270,40 @@ class LoggerAppenderPDO extends LoggerAppender
     public function getDSN($dsn)
     {
         $this->setString('dsn', $dsn);
+    }
+
+    /**
+     * Connects to the database, and prepares the insert query.
+     *
+     * @throws PDOException if connect or prepare fails
+     */
+    protected function establishConnection()
+    {
+        // Acquire database connection
+        $this->db = new PDO($this->dsn, $this->user, $this->password);
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Prepare the insert statement
+        $insertSQL = str_replace('__TABLE__', $this->table, $this->insertSQL);
+        $this->preparedInsert = $this->db->prepare($insertSQL);
+    }
+
+    /**
+     * Converts the logging event to a series of database parameters by using
+     * the converter chain which was set up on activation.
+     */
+    protected function format(LoggerLoggingEvent $event): array
+    {
+        $params = [];
+        foreach ($this->converters as $converter) {
+            $buffer = '';
+            while (null !== $converter) {
+                $converter->format($buffer, $event);
+                $converter = $converter->next;
+            }
+            $params[] = $buffer;
+        }
+
+        return $params;
     }
 }

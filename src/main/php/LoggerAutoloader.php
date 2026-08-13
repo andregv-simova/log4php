@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *        http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -14,32 +15,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * @package log4php
  */
-
 if (function_exists('__autoload')) {
-    trigger_error("log4php: It looks like your code is using an __autoload() function. log4php uses spl_autoload_register() which will bypass your __autoload() function and may break autoloading.", E_USER_WARNING);
+    trigger_error('log4php: It looks like your code is using an __autoload() function. log4php uses spl_autoload_register() which will bypass your __autoload() function and may break autoloading.', E_USER_WARNING);
 }
 
-spl_autoload_register(array('LoggerAutoloader', 'autoload'));
+spl_autoload_register(['LoggerAutoloader', 'autoload']);
 
 /**
  * Class autoloader.
  *
- * @package log4php
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+ *
  * @version $Revision$
  *
  * @note File changed by Joao M F Rebelo
  */
 class LoggerAutoloader
 {
-
     /** Maps classnames to files containing the class. */
     private static array $classes
-        = array(
-
+        = [
             // Base
             'LoggerAppender' => '/LoggerAppender.php',
             'LoggerAppenderPool' => '/LoggerAppenderPool.php',
@@ -65,7 +61,6 @@ class LoggerAutoloader
             'LoggerAppenderFile' => '/appenders/LoggerAppenderFile.php',
             'LoggerAppenderMail' => '/appenders/LoggerAppenderMail.php',
             'LoggerAppenderMailEvent' => '/appenders/LoggerAppenderMailEvent.php',
-            'LoggerAppenderMongoDB' => '/appenders/LoggerAppenderMongoDB.php',
             'LoggerAppenderNull' => '/appenders/LoggerAppenderNull.php',
             'LoggerAppenderFirePHP' => '/appenders/LoggerAppenderFirePHP.php',
             'LoggerAppenderPDO' => '/appenders/LoggerAppenderPDO.php',
@@ -132,16 +127,17 @@ class LoggerAutoloader
             'LoggerRendererException' => '/renderers/LoggerRendererException.php',
             'LoggerRendererMap' => '/renderers/LoggerRendererMap.php',
             'LoggerRenderer' => '/renderers/LoggerRenderer.php',
-        );
+        ];
 
     /**
      * Loads a class.
-     * @param string $className The name of the class to load.
+     *
+     * @param string $className the name of the class to load
      */
     public static function autoload(string $className): void
     {
         if (isset(self::$classes[$className])) {
-            include dirname(__FILE__) . self::$classes[$className];
+            include dirname(__FILE__).self::$classes[$className];
         }
     }
 }

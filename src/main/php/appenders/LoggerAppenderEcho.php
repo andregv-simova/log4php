@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at.
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -27,10 +28,10 @@
  *     before each line break in the logged message. Default is false.
  *
  * @version $Revision$
- * @package log4php
- * @subpackage appenders
+ *
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @link http://logging.apache.org/log4php/docs/appenders/echo.html Appender documentation
+ *
+ * @see http://logging.apache.org/log4php/docs/appenders/echo.html Appender documentation
  *
  * @note File changed by Joao M F Rebelo
  */
@@ -38,13 +39,12 @@ class LoggerAppenderEcho extends LoggerAppender
 {
     /**
      * Used to mark first append. Set to false after first append.
-     * @var boolean
      */
     protected bool $firstAppend = true;
 
     /**
      * If set to true, a <br /> element will be inserted before each line
-     * break in the logged message. Default value is false. @var boolean
+     * break in the logged message. Default value is false. @var boolean.
      */
     protected bool $htmlLineBreaks = false;
 
@@ -60,7 +60,7 @@ class LoggerAppenderEcho extends LoggerAppender
 
     public function append(LoggerLoggingEvent $event)
     {
-        if ($this->layout !== null) {
+        if (null !== $this->layout) {
             if ($this->firstAppend) {
                 echo $this->layout->getHeader();
                 $this->firstAppend = false;
@@ -76,7 +76,6 @@ class LoggerAppenderEcho extends LoggerAppender
 
     /**
      * Sets the 'htmlLineBreaks' parameter.
-     * @param boolean $value
      */
     public function setHtmlLineBreaks(bool $value)
     {
@@ -85,6 +84,7 @@ class LoggerAppenderEcho extends LoggerAppender
 
     /**
      * Returns the 'htmlLineBreaks' parameter.
+     *
      * @returns boolean
      */
     public function getHtmlLineBreaks(): bool
@@ -92,4 +92,3 @@ class LoggerAppenderEcho extends LoggerAppender
         return $this->htmlLineBreaks;
     }
 }
-
